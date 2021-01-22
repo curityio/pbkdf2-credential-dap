@@ -1,0 +1,29 @@
+/*
+ * Copyright (C) 2021 Curity AB. All rights reserved.
+ *
+ * The contents of this file are the property of Curity AB.
+ * You may not copy or use this file, in either source code
+ * or executable form, except in compliance with terms
+ * set by Curity AB.
+ *
+ * For further information, please contact Curity AB.
+ */
+
+plugins {
+    id 'java'
+}
+
+group = 'io.curity.identityserver.plugin'
+version = '1.0.0'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly group: 'se.curity.identityserver', name: 'identityserver.sdk', version:'5.4.0'
+    compileOnly group: 'org.slf4j', name: 'slf4j-api', version:'1.7.22'
+}
