@@ -17,12 +17,12 @@
 package io.curity.identityserver.plugin.dap.credential.pbkdf2;
 
 
-import io.curity.identityserver.plugin.dap.credential.pbkdf2.Pbkdf2DapConfiguration;
-import se.curity.identityserver.sdk.datasource.CredentialDataAccessProvider;
+import se.curity.identityserver.sdk.Nullable;
+import se.curity.identityserver.sdk.datasource.CredentialDataAccessProviderFactory;
 import se.curity.identityserver.sdk.plugin.descriptor.DataAccessProviderPluginDescriptor;
 
 @SuppressWarnings("unused")
-public class Pbkdf2DataAccessPluginDescriptor implements DataAccessProviderPluginDescriptor
+public class Pbkdf2DataAccessPluginDescriptor implements DataAccessProviderPluginDescriptor<Pbkdf2DapConfiguration>
 {
     @Override
     public String getPluginImplementationType()
@@ -31,16 +31,13 @@ public class Pbkdf2DataAccessPluginDescriptor implements DataAccessProviderPlugi
     }
 
     @Override
-    public Class getConfigurationType()
+    public Class<Pbkdf2DapConfiguration> getConfigurationType()
     {
         return Pbkdf2DapConfiguration.class;
     }
 
     @Override
-    public Class<? extends CredentialDataAccessProvider> getCredentialDataAccessProvider()
-    {
-        return Pbkdf2CredentialDataAccessProvider.class;
+    public @Nullable Class<? extends CredentialDataAccessProviderFactory> getCredentialDataAccessProviderFactory() {
+        return Pbkdf2CredentialDataAccessProviderFactory.class;
     }
-
-
 }

@@ -18,11 +18,10 @@ package io.curity.identityserver.plugin.dap.credential.pbkdf2;
 
 import se.curity.identityserver.sdk.Nullable;
 import se.curity.identityserver.sdk.ThreadSafe;
-import se.curity.identityserver.sdk.attribute.AccountAttributes;
 import se.curity.identityserver.sdk.attribute.AttributeTableView;
 import se.curity.identityserver.sdk.attribute.AuthenticationAttributes;
 import se.curity.identityserver.sdk.attribute.ContextAttributes;
-import se.curity.identityserver.sdk.datasource.CredentialDataAccessProvider;
+import se.curity.identityserver.sdk.datasource.CredentialVerifyingDataAccessProvider;
 import se.curity.identityserver.sdk.service.AttributeRepository;
 import se.curity.identityserver.sdk.attribute.Attributes;
 import se.curity.identityserver.sdk.attribute.SubjectAttributes;
@@ -35,36 +34,42 @@ import java.security.spec.InvalidKeySpecException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.curity.identityserver.sdk.service.Json;
 
 import java.util.Base64;
 
 import java.util.Map;
 
-public class Pbkdf2CredentialDataAccessProvider implements CredentialDataAccessProvider, ThreadSafe {
+public class Pbkdf2CredentialDataAccessProvider implements CredentialVerifyingDataAccessProvider, ThreadSafe {
     private static final Logger _logger = LoggerFactory.getLogger(Pbkdf2CredentialDataAccessProvider.class);
     private final AttributeRepository _attributeRepository;
     private final String _passwordAttribute;
     private final int _iterations;
     private final int _keyLength;
+    private final Json _json;
 
     public Pbkdf2CredentialDataAccessProvider(Pbkdf2DapConfiguration configuration) {
         _attributeRepository = configuration.getAttributes();
         _passwordAttribute = configuration.getPasswordAttribute();
         _iterations = configuration.getIterations();
         _keyLength = configuration.getKeyLength();
+        _json = configuration.getJson();
     }
 
     @Override
-    public void updatePassword(AccountAttributes account) {
-        throw new UnsupportedOperationException("Password update not supported");
+    public SetResult set(SubjectAttributes subject, String password) {
+        // TODO if this DAP should also store the password, it would have to connect to the underlying data source directly (e.g. connect to a concrete DBMS)
+        return null;
     }
 
     @Override
-    public @Nullable AuthenticationAttributes verifyPassword(String userName, String password) {
-        AttributeTableView attributes = _attributeRepository.getAttributes(userName);
+    public VerifyResult verify(SubjectAttributes subjectAttributes, String password) {
+
+        AttributeTableView attributes = _attributeRepository.getAttributes(subjectAttributes.getSubject());
         if (attributes != null && attributes.getRow(0) != null) {
             Map<String, ?> row = attributes.getRow(0);
-            @Nullable String storedHash = (String) row.get(_passwordAttribute);
+
+            @Nullable String storedHash = _json.fromJson(row.get("attributes").toString()).get(_passwordAttribute).toString();
             if (storedHash != null) {
                 String[] result = storedHash.split(":");
                 if (result.length != 2) {
@@ -76,22 +81,20 @@ public class Pbkdf2CredentialDataAccessProvider implements CredentialDataAccessP
                 if (hash.equalsIgnoreCase(pass)) {
                     row.remove(_passwordAttribute);
                     Attributes accountAttributes = Attributes.fromMap(row);
-                    return AuthenticationAttributes.of(SubjectAttributes.of(userName, accountAttributes),
-                            ContextAttributes.empty());
+                    return new VerifyResult.Accepted(
+                            AuthenticationAttributes.of(
+                                    SubjectAttributes.of(subjectAttributes.getSubject(), accountAttributes),
+                                    ContextAttributes.empty()
+                            ));
                 }
             } else {
-                _logger.info("No stored hash found for " + userName);
+                _logger.info("No stored hash found for {}", subjectAttributes.getSubject());
             }
         } else {
-            _logger.info("No attributes found for " + userName);
+            _logger.info("No attributes found for {} ", subjectAttributes.getSubject());
         }
 
-        return null;
-    }
-
-    @Override
-    public boolean customQueryVerifiesPassword() {
-        return true;
+        return new VerifyResult.Rejected("Password does not match");
     }
 
     private static String hashPassword(final String password, final byte[] saltBytes, final int iterations, final int keyLength) {
