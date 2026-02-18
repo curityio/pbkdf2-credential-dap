@@ -8,15 +8,22 @@
         http://www.liquibase.org/xml/ns/dbchangelog-ext
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
         http://www.liquibase.org/xml/ns/pro
-        http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+        http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd"
+        objectQuotingStrategy="QUOTE_ALL_OBJECTS">
     <changeSet id="1" author="curity">
-        <sql dbms="hsqldb">
-            INSERT INTO PUBLIC."accounts" ("account_id", "username", "active", "created", "updated")
-            VALUES ('fba58f95-2445-4016-a1dd-6adb21998968', 'dana@demo.example', 1, 1668807106, 1668807106);
-        </sql>
-        <sql dbms="hsqldb">
-            INSERT INTO PUBLIC."credentials" ("subject", "password", "attributes", "created", "updated")
-            VALUES ('dana@demo.example', '', '{ password: ''EHuGEOTebG0donCRunK3AelIkLvKlpJohXpeFKYJYqP80HPE/PaBuf+VvF5HbRU5A3rbOLMLaBVacRkli6l7MQ==:3pyfz3Mq4WOvv350xSVWnK8g6NBuWrN115DAUJ6OwPtx9p5mLVzu7SWhHWcEa816m0q7ymFcW5fRyd9s3pIIsA==''}', '2026-02-11 14:42:28.258081', '2026-02-11 14:42:28.258081');
-        </sql>
+        <insert tableName="accounts">
+        <column name="account_id" type="varchar">fba58f95-2445-4016-a1dd-6adb21998968</column>
+        <column name="username" type="varchar">dana@demo.example</column>
+        <column name="active" type="smallint">1</column>
+        <column name="created" type="bigint">1668807106</column>
+        <column name="updated" type="bigint">1668807106</column>
+    </insert>
+    <insert tableName="credentials">
+        <column name="subject" type="varchar">dana@demo.example</column>
+        <column name="password" type="varchar">.</column>
+        <column name="attributes" type="text">{ password: 'EHuGEOTebG0donCRunK3AelIkLvKlpJohXpeFKYJYqP80HPE/PaBuf+VvF5HbRU5A3rbOLMLaBVacRkli6l7MQ==:3pyfz3Mq4WOvv350xSVWnK8g6NBuWrN115DAUJ6OwPtx9p5mLVzu7SWhHWcEa816m0q7ymFcW5fRyd9s3pIIsA=='}</column>
+        <column name="created" type="timestamp">2026-02-11 14:42:28.258081</column>
+        <column name="updated" type="timestamp">2026-02-11 14:42:28.258081</column>
+    </insert>
     </changeSet>
 </databaseChangeLog>

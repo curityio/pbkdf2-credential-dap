@@ -18,6 +18,8 @@ docker run -it \
 -v ../build/libs/pbkdf2-credential-dap-1.0.0.jar:/opt/idsvr/usr/share/plugins/pbkdf2-dap/pbkdf2-dap.jar  \
 -v ./changelog.xml:/opt/idsvr/etc/liquibase/curity/changelog.xml \
 -v ./curity-config.xml:/opt/idsvr/etc/init/config.xml \
--p 6749:6749 -p 8443:8443 --rm -e LOGGING_LEVEL=DEBUG -e ADMIN=true -e LICENSE_KEY=$LICENSE_KEY --name idsvr \
+-p 6749:6749 -p 8443:8443 --rm -e ADMIN=true -e LICENSE_KEY=$LICENSE_KEY --name idsvr \
 curity.azurecr.io/curity/idsvr
 
+# Add this to the command if you need to connect a remote debugger, see https://curity.io/resources/learn/attach-debugger/ for details.
+# -e JAVA_OPTS='-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005' -p 5005:5005 \
