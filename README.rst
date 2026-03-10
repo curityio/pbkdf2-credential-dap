@@ -7,9 +7,9 @@ PBKDF2 Credential Data Access Provider Plugin
 .. image:: https://img.shields.io/badge/availability-source-blue
     :target: https://curity.io/resources/code-examples/status/
 
-This repository contains an open-source Data Access Provider (DAP) plugin for the Curity Identity Server. This DAP provides only one feature — it validates credentials which have been hashed with the PBKDF2 algorithm.
+This repository contains a demo code for a Data Access Provider (DAP) plugin for the Curity Identity Server. Note the Curity Identity Server supports PBKDF2 hashing and the purpose of this plugin is to show how a DAP can be used to implement custom credential validation.
 
-This DAP should be configured in addition to a full-featured DAP, that can fetch the hashed password from the database. Any credential managers that should work with this DAP should be configured to ``plaintext`` (see below), so that the validation is left to this plugin.
+This DAP should be configured in addition to a full-featured DAP, that can fetch the hashed password from the database. Any credential managers that should work with this DAP should be configured to use ``plaintext`` (see below), so that the validation is left to this plugin.
 
 Building the Plugin
 ~~~~~~~~~~~~~~~~~~~
@@ -66,7 +66,7 @@ For example:
 
 Which represents first the salt and then the hash from the password "``1234``" with ``SHA1``, ``10000`` iterations and ``512`` bits of key length.
 
-If you have configured your data source to return all attributes (including password hash) keep in mind that if use the attribute data source again, e.g. for a claims provider, you will get the hash there as well.
+If you have configured your data source to return all attributes (including password hash), keep in mind that if you use the attribute data source again, e.g., for a claims provider, you will get the hash there as well.
 
 Contributing
 ~~~~~~~~~~~~

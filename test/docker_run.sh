@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Ensure that the script runs in the script's parent directory for the relative paths to work
+cd "$(dirname "${BASH_SOURCE[0]}")"
+
 #
 # Check prerequisites
 #
