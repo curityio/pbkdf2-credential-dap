@@ -21,6 +21,7 @@ import se.curity.identityserver.sdk.service.AttributeRepository;
 import se.curity.identityserver.sdk.config.annotation.DefaultString;
 import se.curity.identityserver.sdk.config.annotation.DefaultInteger;
 import se.curity.identityserver.sdk.config.annotation.Description;
+import se.curity.identityserver.sdk.service.Json;
 
 
 public interface Pbkdf2DapConfiguration extends Configuration
@@ -39,4 +40,6 @@ public interface Pbkdf2DapConfiguration extends Configuration
     @Description("Key length in bits")
     @DefaultInteger(512)
     int getKeyLength();
+
+    Json getJson();
 }
